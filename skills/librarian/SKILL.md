@@ -112,7 +112,7 @@ lines of curated content (below the instructions section).
 
 **What belongs in MEMORY.md:**
 
-- One-liner pointers to detailed files ("See `memory/people/julianna.md`")
+- One-liner pointers to detailed files ("See `memory/people/sam-rivera.md`")
 - Core identity facts (name, location, key relationships)
 - Active preferences that affect daily interactions
 - Critical operational notes (things that prevent errors)
@@ -156,7 +156,7 @@ Append a brief summary to today's daily file (`memory/YYYY-MM-DD.md`):
 ## Librarian Run
 
 - Promoted 3 items from daily files to structured memory
-- Updated people/thomas.md with new relationship status
+- Updated people/alex-chen.md with new relationship status
 - Created topics/soil-health.md (extracted from multiple daily files)
 - Trimmed MEMORY.md from 145 to 98 lines
 - Removed 2 stale calendar entries
@@ -181,7 +181,7 @@ knowledge graph that makes relationships visible and improves retrieval.
 
 Add wiki-links when writing or updating any memory file:
 
-- Mention a person → `[[thomas-owen]]`
+- Mention a person → `[[alex-chen]]`
 - Reference a project → `[[openclaw-config]]`
 - Cite a decision → `[[2026-01-15-database-choice]]`
 - Reference a topic → `[[restaurants]]`
@@ -189,7 +189,7 @@ Add wiki-links when writing or updating any memory file:
 **Example daily file entry:**
 
 ```markdown
-Met with [[thomas-owen]] about [[project-atlas]]. He's leaning toward Postgres — see
+Met with [[alex-chen]] about [[project-atlas]]. He's leaning toward Postgres — see
 [[2026-02-18-database-choice]] for the decision. Grabbed dinner at a new spot worth
 adding to [[restaurants]].
 ```
@@ -214,7 +214,7 @@ As part of each maintenance loop:
 
 ## File Conventions
 
-- All filenames: **kebab-case** (`thomas-owen.md`, not `Thomas Owen.md`)
+- All filenames: **kebab-case** (`alex-chen.md`, not `Thomas Owen.md`)
 - People files: `firstname-lastname.md` (or `firstname.md` if unambiguous)
 - Date files: `YYYY-MM-DD.md`
 - Decision files: `YYYY-MM-DD-topic.md`
