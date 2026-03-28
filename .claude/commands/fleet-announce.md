@@ -89,12 +89,22 @@ Send all? Or edit?
 Look up the notification channel and recipient ID from each person's fleet file, then
 send via SSH:
 
-```bash
-ssh <host> "openclaw message send --channel <channel> -t <recipient_id> -m '<message>'"
+```python
+import subprocess, shlex
+
+msg = "<message>"  # the crafted message
+cmd = (
+    f"openclaw message send"
+    f" --channel <channel>"
+    f" --target <recipient_id>"
+    f" --message {shlex.quote(msg)}"
+)
+subprocess.run(["ssh", "<host>", cmd])
 ```
 
-**Important:** Single quotes in the message must be escaped. Messages come FROM their
-bot, not from the fleet owner.
+**Why Python:** Shell quoting is unreliable for natural-language messages that contain
+contractions (`don't`), dollar signs, or backticks. `shlex.quote()` handles all of these
+correctly. Messages come FROM their bot, not from the fleet owner.
 
 ## 5. Confirm
 
