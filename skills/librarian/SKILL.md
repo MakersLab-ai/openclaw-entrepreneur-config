@@ -1,6 +1,6 @@
 ---
 name: librarian
-version: 0.2.0
+version: 0.3.0
 description: >
   Organize and maintain the knowledge base. Promotes durable knowledge from daily files
   into structured locations, trims MEMORY.md, deduplicates, and keeps the filing system
@@ -163,6 +163,43 @@ Append a brief summary to today's daily file (`memory/YYYY-MM-DD.md`):
 ```
 
 This creates an audit trail and helps the next run know where the last one left off.
+
+### Step 8: Learning Analysis (Pattern Detection)
+
+After standard memory maintenance, run the learning loop's pattern detection pass. This
+is how corrections compound into improvements over time.
+
+1. **Read** `memory/learning/corrections.md` — scan entries from the last 30 days
+2. **Group** entries by similarity — same domain, same kind of learning
+3. **Detect patterns** — if 2+ corrections share the same root cause across different
+   sessions, that's a pattern candidate. Synthesize the corrections into a single
+   operating rule (see `workflows/learning-loop/AGENT.md` Phase 2 for format)
+4. **Check for duplicates** — before creating a new pattern, check if it already exists
+   in `memory/learning/patterns.md` or in any workflow's `agent_notes.md`
+5. **Write candidates** to `memory/learning/patterns.md` as complete, self-contained
+   rules with pipeline metadata in HTML comments
+6. **Prune stale corrections** — archive entries older than 30 days that never became
+   patterns (move to `memory/learning/archive/YYYY-QN.md`). **Exception:** do not
+   archive corrections that informed a pattern still marked `candidate` in its HTML
+   comment — those entries must survive until the pattern is promoted or expired
+7. **Prune stale pattern candidates** — archive entries in `patterns.md` whose HTML
+   comment has `status: candidate` and is older than 60 days (move to archive)
+
+Log the results to today's daily file:
+
+```
+## Learning Loop — Pattern Detection
+
+- Corrections reviewed: N (last 30 days)
+- New patterns detected: N
+- Existing patterns updated: N
+- Stale corrections archived: N
+- Stale pattern candidates expired: N
+```
+
+If `memory/learning/corrections.md` doesn't exist or is empty, skip this step silently.
+
+See `workflows/learning-loop/AGENT.md` for the full learning loop architecture.
 
 ## Wiki-Links (Knowledge Graph)
 
