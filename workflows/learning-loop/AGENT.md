@@ -390,22 +390,22 @@ The learning loop runs on two schedules:
 **Pattern detection (daily, via librarian):** Already included in librarian's daily cron
 — no separate job needed.
 
-**Validation (weekly):**
+**Validation (nightly):**
 
 ```
 openclaw cron add \
   --name "learning-loop-validate" \
-  --cron "0 6 * * 0" \
+  --cron "30 23 * * *" \
   --tz "<timezone>" \
   --session isolated \
   --delivery-mode none \
   --model opus \
-  --timeout-seconds 300 \
+  --timeout-seconds 600 \
   --message "Run the learning loop validation. Read workflows/learning-loop/AGENT.md Phase 3 and follow it."
 ```
 
-Weekly on Sunday at 6am. Uses an expensive model for judgment calls. Silent unless
-patterns need human review.
+Nightly at 11:30 PM (after nightly reflection at 11 PM). Uses an expensive model for
+judgment calls. Silent unless patterns need human review.
 
 ---
 
