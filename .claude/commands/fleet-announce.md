@@ -86,8 +86,9 @@ Send all? Or edit?
 
 ## 4. Send
 
-Look up the notification channel and recipient ID from each person's fleet file, then
-send via SSH:
+Fleet announcements go to the **⚙️ System** topic on each person's Telegram. Look up the
+notification channel, recipient ID, and System topic thread ID from each person's fleet
+file (`~/openclaw-fleet/<machine>.md` → `## Topics` section), then send via SSH:
 
 ```python
 import subprocess, shlex
@@ -95,8 +96,9 @@ import subprocess, shlex
 msg = "<message>"  # the crafted message
 cmd = (
     f"openclaw message send"
-    f" --channel <channel>"
-    f" --target <recipient_id>"
+    f" --channel telegram"
+    f" --target <recipient_telegram_id>"
+    f" --thread-id <system_topic_thread_id>"
     f" --message {shlex.quote(msg)}"
 )
 subprocess.run(["ssh", "<host>", cmd])
@@ -105,6 +107,10 @@ subprocess.run(["ssh", "<host>", cmd])
 **Why Python:** Shell quoting is unreliable for natural-language messages that contain
 contractions (`don't`), dollar signs, or backticks. `shlex.quote()` handles all of these
 correctly. Messages come FROM their bot, not from the fleet owner.
+
+**If ⚙️ System topic doesn't exist:** Create it first with
+`openclaw message thread create --channel telegram --target <id> --thread-name '⚙️ System'`
+and record the returned thread ID in the fleet file.
 
 ## 5. Confirm
 
