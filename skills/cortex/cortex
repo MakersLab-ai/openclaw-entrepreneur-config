@@ -25,12 +25,11 @@ import yaml
 # --- File classification ---
 
 FILE_TYPES = {
-    "text": {".md", ".txt", ".rst", ".org", ".csv", ".json", ".jsonl", ".yaml", ".yml", ".toml", ".xml"},
-    "code": {".py", ".js", ".ts", ".sh", ".go", ".rs", ".java", ".rb", ".sql", ".r"},
+    "text": {".md", ".txt"},
     "pdf": {".pdf"},
-    "document": {".docx", ".doc", ".rtf", ".pptx", ".xlsx"},
+    "document": {".docx", ".doc", ".rtf", ".pptx", ".xlsx", ".xls"},
     "web": {".html", ".htm"},
-    "image": {".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".bmp", ".tiff"},
+    "image": {".png", ".jpg", ".jpeg", ".gif", ".webp", ".svg", ".bmp", ".tiff", ".heic"},
     "audio": {".mp3", ".wav", ".m4a", ".ogg", ".flac", ".aac", ".opus", ".aiff"},
     "video": {".mp4", ".mov", ".avi", ".mkv", ".webm"},
 }
@@ -42,7 +41,7 @@ for ftype, exts in FILE_TYPES.items():
         EXT_TO_TYPE[ext] = ftype
 
 # Types that an LLM can read and should be downloaded if online-only
-READABLE_TYPES = {"text", "code", "pdf", "document", "web"}
+READABLE_TYPES = {"text", "pdf", "document", "web"}
 
 # Types that are cataloged but not read by an LLM
 CATALOG_TYPES = {"image", "audio", "video"}
@@ -175,13 +174,13 @@ def detect_cloud_storage() -> list[tuple[str, Path]]:
 # --- Hash ---
 
 def compute_hash(file_path: Path) -> str | None:
-    """Compute MD5 hash of file content. Returns None if file is not readable (online-only)."""
+    """Compute MD5 hash of file content. Returns None if file is not readable (online-only or empty)."""
     h = hashlib.md5()
     try:
         with open(file_path, "rb") as f:
             chunk = f.read(8192)
-            if not chunk and file_path.stat().st_size > 0:
-                # File reports a size but no content — likely online-only
+            if not chunk:
+                # No content — online-only or truly empty. Either way, nothing to hash.
                 return None
             h.update(chunk)
             for chunk in iter(lambda: f.read(8192), b""):
@@ -323,7 +322,7 @@ def cmd_setup() -> None:
     # Create .gitignore
     gitignore = store_path / ".gitignore"
     if not gitignore.exists():
-        gitignore.write_text(".obsidian/\n.cortex.db\n.cortex.db-wal\n.cortex.db-shm\n.log\n")
+        gitignore.write_text(".obsidian/\n.cortex.db\n.cortex.db-wal\n.cortex.db-shm\n*.log\n")
         print("Created .gitignore")
 
     # Initialize SQLite
