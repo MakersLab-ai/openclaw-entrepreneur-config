@@ -63,48 +63,35 @@ Update my openclaw config
 
 ```
 openclaw-config/
-├── templates/          # Identity & operating instructions
-│   ├── AGENTS.md       # How the AI should think and act
-│   ├── SOUL.md         # Personality definition (templated)
-│   ├── USER.md         # Your profile — who you are, how you work
-│   ├── HEARTBEAT.md    # Periodic checks (inbox, tasks, health)
-│   ├── TOOLS.md        # Machine-specific environment config
-│   └── IDENTITY.md     # Quick reference card
+├── templates/              # Identity & operating instructions
+│   ├── AGENTS.md           # How the AI should think and act
+│   ├── SOUL.md             # Personality definition (templated)
+│   ├── USER.md             # Your profile — who you are, how you work
+│   ├── HEARTBEAT.md        # Periodic checks (inbox, tasks, health)
+│   ├── TOOLS.md            # Machine-specific environment config
+│   └── IDENTITY.md         # External persona — name, email, role
 │
-├── skills/             # Standalone UV scripts — no install needed
-│   ├── parallel/       # Web research & content extraction
-│   ├── quo/            # Business phone — calls, texts, contacts
-│   ├── fathom/         # Meeting recording & transcript search
-│   ├── fireflies/      # Meeting transcript search
-│   ├── limitless/      # Pendant lifelog search
-│   ├── asana/          # Task & project management (Asana)
-│   ├── todoist/        # Task & project management (Todoist)
-│   ├── followupboss/   # Real estate CRM
-│   ├── cortex/         # Personal knowledge compiler
-│   ├── librarian/      # Deprecated → replaced by cortex
-│   ├── create-great-prompts/  # Prompt engineering guide
-│   ├── smart-delegation/     # Route work to the right model
-│   ├── vapi-calls/          # Voice calls via Vapi AI
-│   ├── workflow-builder/     # Design new autonomous workflows
-│   └── openclaw/       # Self-management & updates
+├── skills/                 # Starter-set Python UV scripts (installed by default)
+│   ├── openclaw/           # Self-management & updates
+│   ├── gateway-restart/    # Graceful gateway restart
+│   └── create-great-prompts/  # Prompt engineering guide
 │
-├── workflows/          # Autonomous agents with state & learning
-│   ├── email-steward/  # Inbox triage — archive noise, surface what matters
-│   ├── task-steward/   # Classify, create, execute, and QA tasks
-│   ├── calendar-steward/    # Daily briefing with travel & meeting prep
-│   ├── contact-steward/    # Detect and organize unknown contacts
-│   ├── security-sentinel/  # Threat intelligence & exposure mapping
-│   ├── cron-healthcheck/   # Broken cron detection & auto-remediation
-│   └── learning-loop/     # Self-improvement — corrections → patterns → knowledge
+├── skill-candidates/       # Optional skills (manual activation — copy to skills/)
+│   ├── agentmail, asana, fathom, fireflies, followupboss,
+│   ├── limitless, parallel, quo, smart-delegation, tgcli,
+│   └── tgcli-topics, todoist, vapi-calls, workflow-builder
 │
-├── memory/             # Example memory directory structure
-│   ├── people/         # One file per person
-│   ├── projects/       # One file per project
-│   ├── topics/         # Domain expertise & preferences
-│   ├── decisions/      # Important decisions with reasoning
-│   └── learning/       # Corrections, patterns, and improvement archive
+├── plugins/                # TypeScript OpenClaw plugins (loaded by gateway)
+│   └── groundcontrol/      # (coming) task board plugin
 │
-└── devops/             # Health checks & fleet management
+├── workflows/              # Autonomous agents with state & learning
+│   ├── email-steward, task-steward, calendar-steward,
+│   ├── contact-steward, security-sentinel, cron-healthcheck,
+│   └── learning-loop, llm-usage-report
+│
+├── memory/                 # Example memory structure (OpenClaw indexes this automatically)
+│
+└── devops/                 # Health checks & fleet management
 ```
 
 ## Skills
@@ -113,25 +100,38 @@ Each skill is a standalone [UV script](https://docs.astral.sh/uv/guides/scripts/
 Python with inline dependencies, no project-level setup. Run directly, version
 independently.
 
-| Skill                    | What it does                                                           | Version |
-| ------------------------ | ---------------------------------------------------------------------- | ------- |
-| **parallel**             | Web search, extraction, deep research & enrichment via Parallel.ai CLI | 0.3.0   |
-| **quo**                  | Business phone — calls, texts, voicemails, contacts, SMS               | 0.6.0   |
-| **fathom**               | Query meeting recordings — transcripts, summaries, action items        | 0.1.0   |
-| **fireflies**            | Search meeting transcripts & action items                              | 0.2.0   |
-| **limitless**            | Query Pendant lifelogs & conversations                                 | 0.2.0   |
-| **asana**                | Task & project management via MCP                                      | 0.1.0   |
-| **todoist**              | Task & project management via official CLI                             | 0.1.0   |
-| **followupboss**         | Real estate CRM — contacts, deals, pipeline                            | 0.1.0   |
-| **librarian**            | ~~Knowledge base maintenance~~ → replaced by **cortex**                | 0.5.0   |
-| **create-great-prompts** | Prompt engineering for LLM agents                                      | 2.0.0   |
-| **smart-delegation**     | Route work to Opus, Grok, or handle directly                           | 0.2.0   |
-| **workflow-builder**     | Design new autonomous workflows                                        | 0.1.0   |
-| **gateway-restart**      | Graceful gateway restart — waits for active work                       | 0.1.0   |
-| **vapi-calls**           | Make outbound phone calls via Vapi voice AI                            | 0.1.0   |
-| **tgcli**                | Read, search, and send Telegram messages via personal account          | 0.1.0   |
-| **cortex**               | Personal knowledge compiler — ingest, query, lint, memory maintenance  | 0.2.0   |
-| **openclaw**             | Install, update, and health-check the config                           | 0.2.2   |
+### Starter Set (installed by default)
+
+| Skill                    | What it does                                                       |
+| ------------------------ | ------------------------------------------------------------------ |
+| **openclaw**             | Install, update, and health-check the config                       |
+| **gateway-restart**      | Graceful gateway restart — waits for active work                   |
+| **create-great-prompts** | Prompt engineering for LLM agents                                  |
+
+Primary email and task flows come from native OpenClaw plugins (`gog gmail`,
+`groundcontrol`) that ship with the gateway — not as UV skills.
+
+### Skill Candidates (manual activation)
+
+Optional integrations in `skill-candidates/`. Not installed by default and not
+available via `openclaw add-skill` — copy the folder to `skills/` to enable.
+
+| Skill                | What it does                                                         |
+| -------------------- | -------------------------------------------------------------------- |
+| **agentmail**        | AgentMail-hosted email inboxes (alternative to gog gmail)            |
+| **asana**            | Task & project management via MCP                                    |
+| **todoist**          | Task & project management via official CLI                           |
+| **followupboss**     | Real estate CRM — contacts, deals, pipeline                          |
+| **limitless**        | Query Pendant lifelogs & conversations                               |
+| **fireflies**        | Search meeting transcripts & action items                            |
+| **fathom**           | Query meeting recordings — transcripts, summaries, action items      |
+| **parallel**         | Web search, extraction, deep research via Parallel.ai CLI            |
+| **tgcli**            | Read, search, and send Telegram messages via personal account        |
+| **tgcli-topics**     | Discover and list Telegram forum topics                              |
+| **quo**              | Business phone — calls, texts, voicemails, contacts, SMS             |
+| **vapi-calls**       | Make outbound phone calls via Vapi voice AI                          |
+| **smart-delegation** | Route work to Opus, Grok, or handle directly                         |
+| **workflow-builder** | Design new autonomous workflows                                      |
 
 ## Workflows
 
@@ -159,20 +159,22 @@ Each workflow maintains its own state:
 ## Memory Architecture
 
 Most AI memory is "dump everything into a vector database." OpenClaw uses deliberate,
-structured memory with clear tiers:
+structured memory with clear tiers, managed by the gateway natively:
 
 **Tier 1 — Always loaded.** `MEMORY.md` stays in context every conversation. Curated to
-~100 lines of what matters most.
+~100 lines of what matters most. Populated automatically via `openclaw memory
+promote --apply` when short-term recalls prove durable.
 
 **Tier 2 — Daily context.** `memory/YYYY-MM-DD.md` files. Today and yesterday load
 automatically. Raw observations, not curated.
 
-**Tier 3 — Deep knowledge.** `memory/people/`, `projects/`, `topics/`, `decisions/`.
-Searched via vector embeddings (LM Studio local or OpenAI). Retrieved when relevant, not
-loaded by default.
+**Tier 3 — Vector search.** Everything in `memory/` is indexed by `openclaw memory index`
+(sqlite-vec + FTS). Retrieve via `openclaw memory search "query"` — no manual entity
+pages required.
 
-The **cortex** skill compiles raw sources into structured knowledge — documents, notes,
-and transcripts become interlinked entity pages, summaries, and decision records.
+REM/DREAMS consolidation (`openclaw memory rem-*`) periodically distills short-term
+recalls into long-term memory. Structured project knowledge lives in GROUNDCONTROL
+(initiatives, tasks, docs, OKRs) — not as markdown files in `memory/`.
 
 What gets remembered is filtered through four criteria:
 
