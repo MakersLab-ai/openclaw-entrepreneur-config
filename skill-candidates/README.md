@@ -21,6 +21,7 @@ Skills hier sind entweder:
 
 | Skill | Kategorie | Wofür |
 |-------|-----------|-------|
+| `agentmail` | Email | AgentMail-hosted Inboxes (agentmail.to) — Alternative zu gog gmail für webhook-basierte oder Multi-Inbox-Setups |
 | `asana` | Task-Management | Asana-Projekte und Tasks |
 | `todoist` | Task-Management | Todoist |
 | `followupboss` | CRM | Follow Up Boss |
