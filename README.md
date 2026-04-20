@@ -67,7 +67,6 @@ openclaw-config/
 │   ├── AGENTS.md       # How the AI should think and act
 │   ├── SOUL.md         # Personality definition (templated)
 │   ├── USER.md         # Your profile — who you are, how you work
-│   ├── MEMORY.md       # Curated essentials, always in context
 │   ├── HEARTBEAT.md    # Periodic checks (inbox, tasks, health)
 │   ├── TOOLS.md        # Machine-specific environment config
 │   └── IDENTITY.md     # Quick reference card
