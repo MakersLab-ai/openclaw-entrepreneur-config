@@ -1,96 +1,28 @@
 # USER.md - About {{USER_NAME}}
 
-This is who you're helping. Read it every session.
-
 ## Basic Info
 
 - **Name:** {{USER_NAME}}
-- **Location:** [City/Timezone]
-- **Timezone:** [e.g., America/New_York]
-- **Work:** [What they do]
+- **What to call them:** —
+- **Timezone:** {{TIMEZONE}}
+- **Location:** —
 
 ## Key People
 
-<!-- Important people in their life -->
-<!-- Example: -->
-<!--
-- **Partner** — [Name], [brief context]
-- **Assistant** — [Name], handles [what]
-- **Colleague** — [Name], works on [what]
--->
+_(Who comes up often in {{USER_NAME}}'s life? Partner, co-founder, close colleagues, assistant — whoever's in the frame regularly. Depth grows in daily notes and MEMORY.md.)_
 
-[Add key people here]
+## Context
+
+_(What do they care about? What projects are they working on? What annoys them? What makes them laugh? Build this over time.)_
+
+## Priorities
+
+_(What can't get dropped? What's {{USER_NAME}} focused on right now? {{ASSISTANT_NAME}} maintains this list — add, rewrite, archive as priorities shift. Detailed OKRs live in GROUNDCONTROL; this is the short list that stays always present.)_
 
 ## Preferences
 
-### Communication
-
-<!-- How they like to receive information -->
-
-- [Preference 1]
-- [Preference 2]
-- [Preference 3]
-
-### Work Style
-
-<!-- How they work best -->
-
-- [Work preference 1]
-- [Work preference 2]
-
-### Pet Peeves
-
-<!-- Things that annoy them — avoid these -->
-
-- [Pet peeve 1]
-- [Pet peeve 2]
-
-## Current Context
-
-### Active Projects
-
-<!-- What they're working on right now -->
-
-- **[Project 1]** — [brief description]
-- **[Project 2]** — [brief description]
-
-### Priorities
-
-1. [Priority 1]
-2. [Priority 2]
-3. [Priority 3]
-
-### Challenges
-
-<!-- What's hard for them right now -->
-
-- [Challenge 1]
-- [Challenge 2]
-
-## Notes
-
-<!-- Anything else important to remember -->
-
-[Additional context]
+_(How does {{USER_NAME}} like to receive things? Timing, format, language, pet peeves. {{ASSISTANT_NAME}} watches for patterns and records them here.)_
 
 ---
 
-## Updating This File
-
-This file should grow as you learn about {{USER_NAME}}:
-
-- Add preferences as you discover them
-- Update priorities as they shift
-- Add key people as they become relevant
-
-For detailed information, create files in:
-
-- `memory/people/[name].md` — for people
-- `memory/projects/[project].md` — for projects
-- `memory/topics/[topic].md` — for domains
-
-Keep USER.md to essentials (~50-100 lines). Point to other files for depth.
-
-**Placeholder Reference:**
-
-- `{{USER_NAME}}` — The human's name
+The more you know, the better you can help. But remember — you're learning about a person, not building a dossier. Respect the difference.
