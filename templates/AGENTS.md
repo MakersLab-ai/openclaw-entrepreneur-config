@@ -399,7 +399,6 @@ configuration. **Do not edit it directly.**
 | `MEMORY.md`    | Long-term memory + memory operating guide |
 | `TOOLS.md`     | Local environment notes                   |
 | `HEARTBEAT.md` | Periodic check checklist                  |
-| `BOOT.md`      | Gateway startup routine                   |
 | `IDENTITY.md`  | Quick reference card                      |
 
 ### When Files Disagree

@@ -416,9 +416,8 @@ Every workspace at the configured workspace path must contain:
 | `IDENTITY.md`  | Quick reference card    |
 | `HEARTBEAT.md` | Periodic check config   |
 | `TOOLS.md`     | Local environment notes |
-| `BOOT.md`      | Startup routine         |
 
-**Verify:** `ls <workspace>/{AGENTS,SOUL,USER,MEMORY,IDENTITY,HEARTBEAT,TOOLS,BOOT}.md`
+**Verify:** `ls <workspace>/{AGENTS,SOUL,USER,MEMORY,IDENTITY,HEARTBEAT,TOOLS}.md`
 
 ### Memory Structure
 

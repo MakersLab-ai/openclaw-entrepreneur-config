@@ -68,7 +68,6 @@ openclaw-config/
 │   ├── SOUL.md         # Personality definition (templated)
 │   ├── USER.md         # Your profile — who you are, how you work
 │   ├── MEMORY.md       # Curated essentials, always in context
-│   ├── BOOT.md         # Startup routine — what to check on launch
 │   ├── HEARTBEAT.md    # Periodic checks (inbox, tasks, health)
 │   ├── TOOLS.md        # Machine-specific environment config
 │   └── IDENTITY.md     # Quick reference card

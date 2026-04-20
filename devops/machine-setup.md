@@ -398,10 +398,9 @@ Every workspace at `~/.openclaw/workspace/` must contain these files:
 | `IDENTITY.md`  | Quick reference card (must be under 305 characters) |
 | `HEARTBEAT.md` | Periodic check config                               |
 | `TOOLS.md`     | Local environment notes                             |
-| `BOOT.md`      | Startup routine                                     |
 
 **Verify:**
-`ls ~/.openclaw/workspace/{AGENTS,SOUL,USER,MEMORY,IDENTITY,HEARTBEAT,TOOLS,BOOT}.md`
+`ls ~/.openclaw/workspace/{AGENTS,SOUL,USER,MEMORY,IDENTITY,HEARTBEAT,TOOLS}.md`
 
 ### Memory Structure
 
@@ -466,9 +465,6 @@ These internal hooks should be enabled in `~/.openclaw/openclaw.json` under `hoo
     "internal": {
       "enabled": true,
       "entries": {
-        "boot-md": {
-          "enabled": true
-        },
         "command-logger": {
           "enabled": true
         },
@@ -481,11 +477,10 @@ These internal hooks should be enabled in `~/.openclaw/openclaw.json` under `hoo
 }
 ```
 
-| Hook             | Purpose                                                             |
-| ---------------- | ------------------------------------------------------------------- |
-| `boot-md`        | Runs BOOT.md on agent startup — establishes context and orientation |
-| `command-logger` | Logs all commands executed — audit trail                            |
-| `session-memory` | Tracks session state in memory — continuity across conversations    |
+| Hook             | Purpose                                                          |
+| ---------------- | ---------------------------------------------------------------- |
+| `command-logger` | Logs all commands executed — audit trail                         |
+| `session-memory` | Tracks session state in memory — continuity across conversations |
 
 **Verify:** Check `hooks.internal.entries` in `~/.openclaw/openclaw.json` — all three
 should be present and enabled.
