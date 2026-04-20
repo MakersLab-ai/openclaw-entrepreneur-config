@@ -1,34 +1,21 @@
 # HEARTBEAT.md
 
-## Periodic Checks (Rotate, 1-2 per heartbeat)
+_(What should {{ASSISTANT_NAME}} check periodically? Keep it tight — this runs on every heartbeat.)_
 
-- [ ] Urgent emails (check if >4h since last check)
-- [ ] Calendar next 24h (check if >8h since last check)
+## Every Heartbeat
 
-## Daily Checks
+### Agent Inbox ({{ASSISTANT_EMAIL}})
 
-- [ ] Config updates: check if openclaw-config has updates, apply them if available
-- [ ] Learning loop: if `memory/learning/patterns.md` has high- or medium-confidence
-      unvalidated candidates >= the threshold in `workflows/learning-loop/rules.md`, run
-      validation (see `workflows/learning-loop/AGENT.md` Phase 3)
+- Check for new messages: `gog gmail search "is:unread newer_than:2h" --max 5 --account {{ASSISTANT_EMAIL}}`
+- Emails from {{USER_NAME}}: treat as a work order — read, understand, derive GROUNDCONTROL tasks, reply or acknowledge if it fits
+- Other senders: never reply autonomously — draft responses, let {{USER_NAME}} approve
+
+## Daily
+
+- Config updates — check if openclaw-config has updates, apply if available
 
 ## Rules
 
 - Late night (23:00-08:00): skip periodic unless urgent
-- If all clear: HEARTBEAT_OK
-- If action needed: handle it, don't just report
-
----
-
-## Customization
-
-Edit this file to add your own periodic checks:
-
-```markdown
-## Custom Checks
-
-- [ ] Check [service] for [thing]
-- [ ] Review [folder] for [condition]
-```
-
-Keep this file small to minimize token usage on every heartbeat.
+- All clear → `HEARTBEAT_OK`
+- Action needed → handle it, don't just report
