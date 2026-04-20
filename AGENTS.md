@@ -13,10 +13,37 @@ integration skills.
 
 ## Project Structure
 
-- `skills/` — Integration CLIs (Parallel, Limitless, Fireflies, Quo, OpenClaw)
-- `templates/` — AGENTS.md, SOUL.md, USER.md templates for OpenClaw instances
+- `skills/` — Starter-set integration CLIs (openclaw, gateway-restart, create-great-prompts)
+- `skill-candidates/` — Non-starter skills archived for manual activation (not installable via `openclaw add-skill`; user copies to `skills/` to enable)
+- `plugins/` — TypeScript OpenClaw plugins loaded by the gateway at startup (distinct from skills — plugins register tools and hooks natively, skills are on-demand CLIs)
+- `templates/` — AGENTS.md, SOUL.md, USER.md, HEARTBEAT.md, TOOLS.md, IDENTITY.md for OpenClaw instances
 - `memory/` — Example memory architecture structure
 - `tests/` — Skill tests (integration tests auto-skip without API keys)
+
+## Starter Set
+
+The `skills/` directory is intentionally minimal — only what's needed for every new
+entrepreneur instance. Primary tools come as native OpenClaw plugins (`gog gmail` for
+email, `groundcontrol` for tasks). Integration-specific skills (Asana, Limitless,
+Fireflies, etc.) live in `skill-candidates/` and are pulled in manually if the user
+has those services configured.
+
+## Template Placeholders
+
+Installer replaces these in copied templates during setup (see `skills/openclaw/SKILL.md`
+step 7): `{{USER_NAME}}`, `{{ASSISTANT_NAME}}`, `{{TIMEZONE}}` (default `Europe/Vienna`),
+`{{ASSISTANT_EMAIL}}`, `{{ASSISTANT_ROLE}}`. No runtime substitution — literal
+find-and-replace at install time.
+
+## User-Owned vs Upstream-Owned Files
+
+Critical for the sync mechanism. Preserved on updates (never overwritten):
+- Templates: `SOUL.md`, `USER.md`, `TOOLS.md`, `IDENTITY.md`
+- Workflows: `rules.md`, `agent_notes.md`, `preferences.md`, `processed.md`, `logs/`
+
+Updated on `openclaw sync`:
+- Templates: `AGENTS.md`, `HEARTBEAT.md`
+- All files in `skills/` and workflow algorithm files (`AGENT.md`, `classifier.md`, etc.)
 
 ## Code Conventions
 
