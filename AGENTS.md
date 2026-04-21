@@ -7,43 +7,68 @@ integration skills.
 
 ## Tech Stack
 
-- Skills: Standalone UV scripts (Python 3.11+, inline dependencies)
-- Tests: pytest via `uv run --with pytest pytest tests/ -v`
-- No project-level dependencies — each skill is self-contained
+- This repo is a configuration / documentation layer — no application code to compile or
+  run at the repo level.
+- Skills (in `skills/` or `skill-candidates/`) are standalone UV scripts (Python 3.13+,
+  inline dependencies). Each skill is fully self-contained.
+- No shared deps, no pyproject.toml, no test suite at the repo level.
 
 ## Project Structure
 
-- `skills/` — Starter-set integration CLIs (openclaw, gateway-restart, create-great-prompts)
-- `skill-candidates/` — Non-starter skills archived for manual activation (not installable via `openclaw add-skill`; user copies to `skills/` to enable)
-- `plugins/` — TypeScript OpenClaw plugins loaded by the gateway at startup (distinct from skills — plugins register tools and hooks natively, skills are on-demand CLIs)
-- `templates/` — AGENTS.md, SOUL.md, USER.md, HEARTBEAT.md, TOOLS.md, IDENTITY.md for OpenClaw instances
+- `templates/` — AGENTS.md, SOUL.md, USER.md, HEARTBEAT.md, TOOLS.md, IDENTITY.md for
+  OpenClaw instances
+- `core-migrations/` — Versioned update-diffs for existing instances; applied by the
+  Admin-Agent (see `docs/admin-agent.md`)
+- `defaults/` — Default gateway config template (`openclaw.json.template`) with
+  placeholders
+- `cron/` — Canonical cron manifest (`default-cron.md`)
+- `plugins/` — External plugin install pins (e.g., `plugins/groundcontrol/install.md`);
+  TypeScript plugin code lives in separate repos
+- `skills/` — Optional user-facing UV scripts (currently empty)
+- `skill-candidates/` — Archive of non-default skills for manual activation
+- `workflows/` — Autonomous agents (AGENT.md upstream-owned; rules.md, agent_notes.md,
+  etc. user-owned)
 - `memory/` — Example memory architecture structure
-- `tests/` — Skill tests (integration tests auto-skip without API keys)
+- `devops/` — Health checks, machine setup, security review, notification routing
+- `docs/` — Admin-Agent runbooks (install, update, spec)
 
-## Starter Set
+## Admin-Agent Architecture
 
-The `skills/` directory is intentionally minimal — only what's needed for every new
-entrepreneur instance. Primary tools come as native OpenClaw plugins (`gog gmail` for
-email, `groundcontrol` for tasks). Integration-specific skills (Asana, Limitless,
-Fireflies, etc.) live in `skill-candidates/` and are pulled in manually if the user
-has those services configured.
+This repo is a **base repository** for managed OpenClaw instances. It does not
+self-install. An external **Admin-Agent** (Claude Code on the fleet owner's machine with
+SSH access to each instance and a `fleet` skill loaded) handles provisioning and
+updates. The `fleet` skill lives in `~/.claude/skills/openclaw-fleet/`, not in this repo
+— see `docs/admin-agent.md` for its spec.
+
+**Grundprinzip for template changes:** The base repo is always HEAD. When a template
+changes, the new content goes directly into `templates/`, and a migration folder is
+added to `core-migrations/` describing the diff for instances on the previous state.
+Fresh installs do NOT replay migrations — they copy HEAD and set `current_migration` to
+the latest ID. See `core-migrations/README.md`.
 
 ## Template Placeholders
 
-Installer replaces these in copied templates during setup (see `skills/openclaw/SKILL.md`
-step 7): `{{USER_NAME}}`, `{{ASSISTANT_NAME}}`, `{{TIMEZONE}}` (default `Europe/Vienna`),
-`{{ASSISTANT_EMAIL}}`, `{{ASSISTANT_ROLE}}`. No runtime substitution — literal
-find-and-replace at install time.
+Admin-Agent replaces these during `fleet install` (literal find-and-replace, no runtime
+engine): `{{USER_NAME}}`, `{{ASSISTANT_NAME}}`, `{{TIMEZONE}}` (default
+`Europe/Vienna`), `{{ASSISTANT_EMAIL}}`, `{{ASSISTANT_ROLE}}`. Gateway config adds
+`{{TELEGRAM_BOT_TOKEN}}`, `{{TELEGRAM_USER_ID}}`, `{{TELEGRAM_TOPIC_*}}`. Full list in
+`defaults/README.md`.
 
-## User-Owned vs Upstream-Owned Files
+## User-Owned vs Base-Repo-Owned Files
 
-Critical for the sync mechanism. Preserved on updates (never overwritten):
+Critical for update safety. Never touched by the Admin-Agent after install:
+
 - Templates: `SOUL.md`, `USER.md`, `TOOLS.md`, `IDENTITY.md`
 - Workflows: `rules.md`, `agent_notes.md`, `preferences.md`, `processed.md`, `logs/`
+- `~/.openclaw/openclaw.json` — user overrides survive (changes reach the instance only
+  via migrations, never blind overwrite)
 
-Updated on `openclaw sync`:
+Updated by the Admin-Agent (via `fleet update` + applicable migrations):
+
 - Templates: `AGENTS.md`, `HEARTBEAT.md`
-- All files in `skills/` and workflow algorithm files (`AGENT.md`, `classifier.md`, etc.)
+- Workflow algorithm files: `AGENT.md`, `classifier.md`, platform guides
+- Plugin versions (per `plugins/*/install.md` pin)
+- Crontab entries matching `cron/default-cron.md`
 
 ## Code Conventions
 
@@ -54,7 +79,6 @@ Updated on `openclaw sync`:
 - Keep README.md in sync: update the skill/workflow tables when adding, removing, or
   versioning skills and workflows (counts and version badges are intentionally omitted
   from the README to avoid maintenance burden)
-- Tests skip gracefully when API keys unavailable
 - Keep secrets out of the repo — API keys and `.env` files stay local
 - **This is a public repo — zero PII, zero fleet specifics.** This repo is a shareable
   template that anyone can clone. Never include: real names, Telegram/chat IDs, phone
@@ -70,20 +94,30 @@ Updated on `openclaw sync`:
 
 ## Deployment Model
 
-This repo is the **upstream source** for live OpenClaw instances. The `openclaw` skill
-handles installation and updates:
+This repo is the **base repository** for managed OpenClaw instances. The external
+**Admin-Agent** (a separate Claude Code instance on the fleet owner's machine) clones
+this repo, then provisions and updates each instance over SSH.
 
-- `templates/` → copied to instance workspace on install/update
-- `skills/` → copied to instance workspace (safe to overwrite)
-- `workflows/` → all upstream-owned files are synced (AGENT.md, classifier.md, platform
-  guides, etc.); user-owned files (`rules.md`, `agent_notes.md`, `preferences.md`,
-  `processed.md`, `logs/`) are never overwritten
-- `devops/` → health check and machine setup specs, deployed via cron on fleet machines
+- `templates/` → copied to the instance workspace at install (placeholders substituted
+  once). Subsequent changes flow through `core-migrations/`.
+- `defaults/openclaw.json.template` → rendered + placed at install. Subsequent changes
+  flow through migrations.
+- `cron/default-cron.md` → idempotent-applied to the instance's user crontab at install
+  and every update.
+- `plugins/*/install.md` → Git-based plugin pins; Admin-Agent clones + builds on the
+  instance, re-runs on pin change.
+- `skills/` → copied to the instance workspace on install/update (safe to overwrite;
+  currently empty).
+- `workflows/` → AGENT.md / classifier.md / platform guides are base-repo-owned (updated
+  via migrations). `rules.md`, `agent_notes.md`, `preferences.md`, `processed.md`,
+  `logs/` are user-owned and never touched.
+- `devops/` → health check + machine setup + security review specs, consumed by cron
+  jobs on the instance.
+- `core-migrations/` → Admin-Agent reads these on every `fleet update`, applies any
+  whose ID is higher than the instance's `current_migration`.
 
-This matters: skills and templates can be freely edited here. Workflow directories
-contain a mix of upstream-owned files (algorithms, classifiers, platform guides) and
-user-owned files (rules, notes, logs). The deploy logic syncs all upstream files while
-preserving user state.
+The Admin-Agent itself is NOT in this repo — see `docs/admin-agent.md` for its spec.
+Runbooks: `docs/install.md`, `docs/update.md`.
 
 ## Naming History
 

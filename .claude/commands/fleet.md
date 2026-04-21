@@ -48,30 +48,24 @@ things hoping one works.
 </boundaries>
 
 <graceful-restarts>
-When restarting a gateway (local or remote), **always use the gateway-restart skill**
-instead of raw `openclaw gateway restart` or `launchctl kickstart`. This prevents
-interrupting active conversations or cron jobs mid-execution.
+When restarting a gateway (local or remote), use the native `openclaw gateway`
+CLI with its graceful-restart semantics. Do not `launchctl kickstart` or kill -9
+the gateway process directly — that interrupts active conversations and cron jobs.
 
 ```bash
 # Local graceful restart
-skills/gateway-restart/gateway-restart restart
+openclaw gateway restart
 
 # Remote graceful restart
-skills/gateway-restart/gateway-restart restart --remote <ssh-host>
+ssh <host> 'openclaw gateway restart'
 
-# Check if gateway is busy without restarting
-skills/gateway-restart/gateway-restart status --remote <ssh-host>
-
-# Force restart when waiting isn't appropriate
-skills/gateway-restart/gateway-restart restart --force --remote <ssh-host>
+# Status check (no restart)
+ssh <host> 'openclaw gateway status'
 ```
 
-The skill waits up to 5 minutes (configurable via `--timeout`) for active queries and
-cron jobs to complete before restarting. If the timeout expires, it exits with an error
-— use `--force` to override.
-
-**When to use --force:** Only when the gateway is unhealthy and needs immediate restart
-regardless of active work (e.g., memory leak, hung process, unresponsive to status
+If the native CLI does not yet support graceful-wait behavior, fall back to checking
+`openclaw gateway status` and session age manually before restarting. Only hard-restart
+when the gateway is unresponsive (hung process, memory leak, unresponsive to status
 queries). </graceful-restarts>
 
 <post-update-verification>

@@ -33,7 +33,6 @@ openclaw-config/
 ├── devops/               Health check, machine setup, security review, notifications
 ├── knowledge/            Operational documentation and architecture guides
 ├── memory/               Example memory structure (people/, projects/, topics/)
-├── tests/                pytest suite for workflows and skill integrations
 ├── .claude/
 │   ├── commands/         Claude Code slash commands (fleet, update-model, fleet-announce)
 │   └── settings.json     Hooks and plugin configuration
@@ -245,27 +244,6 @@ Operational documentation in `knowledge/`:
 
 ---
 
-## Testing
-
-pytest-based testing with auto-skip for integration tests:
-
-```bash
-uv run --with pytest pytest tests/ -v
-```
-
-### Test Coverage
-
-**Workflow structure tests:** Validate AGENT.md frontmatter and required sections for
-llm-usage-report workflow.
-
-**Skill integration tests:** agentmail, fireflies, fathom, limitless, parallel, quo,
-followupboss — all auto-skip without respective API keys.
-
-**Skill wrapper tests:** Verify bash/uv wrappers around external CLIs function
-correctly.
-
----
-
 ## What This Repo Provides (Summary)
 
 This repo is the **shareable brain** for OpenClaw instances:
@@ -276,7 +254,6 @@ This repo is the **shareable brain** for OpenClaw instances:
 4. **DevOps specs** — health monitoring, machine setup, security hardening
 5. **Fleet commands** — multi-machine management from Claude Code
 6. **Knowledge docs** — model routing, multi-agent patterns, boot sequences
-7. **Test suite** — validation for workflows and skill integrations
 
 **What it does NOT contain:**
 

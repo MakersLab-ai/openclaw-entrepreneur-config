@@ -41,29 +41,27 @@ Everything is markdown and Python scripts. No frameworks, no databases, no lock-
 
 ## Getting Started
 
-**Prerequisites:** [Claude Code](https://docs.anthropic.com/en/docs/claude-code) running
-on your machine. That's it — no other dependencies.
+This repo is a **base repository** for managed OpenClaw fleets. It does not self-install
+on an instance — provisioning and updates run through a separate **Admin-Agent** (Claude
+Code on the fleet owner's machine, with SSH access to each managed instance and a
+`fleet` skill loaded).
 
-**Install:** Open Claude Code and tell it:
+- **Install a new instance:** `fleet install <instance>` from the Admin-Agent. Runbook:
+  [`docs/install.md`](docs/install.md).
+- **Update existing instances:** `fleet update <instance|all>`. Runbook:
+  [`docs/update.md`](docs/update.md).
+- **Admin-Agent spec (to build the `fleet` skill):**
+  [`docs/admin-agent.md`](docs/admin-agent.md).
 
-```
-Set up openclaw-config from https://github.com/TechNickAI/openclaw-config
-```
-
-The `openclaw` skill walks you through setup — cloning the repo, copying templates,
-creating memory folders, and configuring optional features like semantic search.
-
-**Update later:**
-
-```
-Update my openclaw config
-```
+Template changes on existing instances flow through versioned **Core Migrations**
+([`core-migrations/README.md`](core-migrations/README.md)) — the base repo is always
+HEAD; migrations describe the diff for older instances.
 
 ## How It's Organized
 
 ```
 openclaw-config/
-├── templates/              # Identity & operating instructions
+├── templates/              # Identity & operating instructions (placeholders at install)
 │   ├── AGENTS.md           # How the AI should think and act
 │   ├── SOUL.md             # Personality definition (templated)
 │   ├── USER.md             # Your profile — who you are, how you work
@@ -71,27 +69,40 @@ openclaw-config/
 │   ├── TOOLS.md            # Machine-specific environment config
 │   └── IDENTITY.md         # External persona — name, email, role
 │
-├── skills/                 # Starter-set Python UV scripts (installed by default)
-│   ├── openclaw/           # Self-management & updates
-│   ├── gateway-restart/    # Graceful gateway restart
-│   └── create-great-prompts/  # Prompt engineering guide
+├── core-migrations/        # Versioned update-diffs for existing instances
+│   └── README.md           # Format spec + state-tracking contract
 │
-├── skill-candidates/       # Optional skills (manual activation — copy to skills/)
+├── defaults/               # Default gateway config (placeholders at install)
+│   ├── openclaw.json.template
+│   └── README.md           # Placeholder list
+│
+├── cron/                   # Canonical cron manifest
+│   └── default-cron.md     # Health check + workflow schedules
+│
+├── plugins/                # External plugin install pins
+│   └── groundcontrol/
+│       └── install.md      # Git URL, pinned ref, install steps
+│
+├── skills/                 # Optional user-facing UV scripts (currently empty)
+│
+├── skill-candidates/       # Archive — manual activation only
 │   ├── agentmail, asana, fathom, fireflies, followupboss,
 │   ├── limitless, parallel, quo, smart-delegation, tgcli,
 │   └── tgcli-topics, todoist, vapi-calls, workflow-builder
 │
-├── plugins/                # TypeScript OpenClaw plugins (loaded by gateway)
-│   └── groundcontrol/      # (coming) task board plugin
-│
 ├── workflows/              # Autonomous agents with state & learning
 │   ├── email-steward, task-steward, calendar-steward,
 │   ├── contact-steward, security-sentinel, cron-healthcheck,
-│   └── learning-loop, llm-usage-report
+│   └── learning-loop, llm-usage-report, bridge-health, forward-motion
 │
-├── memory/                 # Example memory structure (OpenClaw indexes this automatically)
+├── memory/                 # Example memory structure (OpenClaw indexes automatically)
 │
-└── devops/                 # Health checks & fleet management
+├── devops/                 # Health checks, machine setup, fleet infrastructure
+│
+└── docs/                   # Runbooks for the Admin-Agent
+    ├── install.md
+    ├── update.md
+    └── admin-agent.md
 ```
 
 ## Skills
@@ -100,38 +111,39 @@ Each skill is a standalone [UV script](https://docs.astral.sh/uv/guides/scripts/
 Python with inline dependencies, no project-level setup. Run directly, version
 independently.
 
-### Starter Set (installed by default)
-
-| Skill                    | What it does                                                       |
-| ------------------------ | ------------------------------------------------------------------ |
-| **openclaw**             | Install, update, and health-check the config                       |
-| **gateway-restart**      | Graceful gateway restart — waits for active work                   |
-| **create-great-prompts** | Prompt engineering for LLM agents                                  |
-
 Primary email and task flows come from native OpenClaw plugins (`gog gmail`,
-`groundcontrol`) that ship with the gateway — not as UV skills.
+`groundcontrol`) loaded by the gateway — not as UV skills. Admin operations (install,
+update, fleet management) live in the external Admin-Agent, not on instances.
+
+### Starter Set
+
+Currently empty. Add new user-facing skills here when they're broadly useful across the
+fleet. Admin-only skills (fleet/install/update) belong in the Admin-Agent's
+`~/.claude/skills/`, not in this directory — see
+[`docs/admin-agent.md`](docs/admin-agent.md).
 
 ### Skill Candidates (manual activation)
 
-Optional integrations in `skill-candidates/`. Not installed by default and not
-available via `openclaw add-skill` — copy the folder to `skills/` to enable.
+Optional integrations in `skill-candidates/`. Not installed by default — copy the folder
+to `skills/` manually to enable (or let the Admin-Agent copy it as part of a
+per-instance install decision).
 
-| Skill                | What it does                                                         |
-| -------------------- | -------------------------------------------------------------------- |
-| **agentmail**        | AgentMail-hosted email inboxes (alternative to gog gmail)            |
-| **asana**            | Task & project management via MCP                                    |
-| **todoist**          | Task & project management via official CLI                           |
-| **followupboss**     | Real estate CRM — contacts, deals, pipeline                          |
-| **limitless**        | Query Pendant lifelogs & conversations                               |
-| **fireflies**        | Search meeting transcripts & action items                            |
-| **fathom**           | Query meeting recordings — transcripts, summaries, action items      |
-| **parallel**         | Web search, extraction, deep research via Parallel.ai CLI            |
-| **tgcli**            | Read, search, and send Telegram messages via personal account        |
-| **tgcli-topics**     | Discover and list Telegram forum topics                              |
-| **quo**              | Business phone — calls, texts, voicemails, contacts, SMS             |
-| **vapi-calls**       | Make outbound phone calls via Vapi voice AI                          |
-| **smart-delegation** | Route work to Opus, Grok, or handle directly                         |
-| **workflow-builder** | Design new autonomous workflows                                      |
+| Skill                | What it does                                                    |
+| -------------------- | --------------------------------------------------------------- |
+| **agentmail**        | AgentMail-hosted email inboxes (alternative to gog gmail)       |
+| **asana**            | Task & project management via MCP                               |
+| **todoist**          | Task & project management via official CLI                      |
+| **followupboss**     | Real estate CRM — contacts, deals, pipeline                     |
+| **limitless**        | Query Pendant lifelogs & conversations                          |
+| **fireflies**        | Search meeting transcripts & action items                       |
+| **fathom**           | Query meeting recordings — transcripts, summaries, action items |
+| **parallel**         | Web search, extraction, deep research via Parallel.ai CLI       |
+| **tgcli**            | Read, search, and send Telegram messages via personal account   |
+| **tgcli-topics**     | Discover and list Telegram forum topics                         |
+| **quo**              | Business phone — calls, texts, voicemails, contacts, SMS        |
+| **vapi-calls**       | Make outbound phone calls via Vapi voice AI                     |
+| **smart-delegation** | Route work to Opus, Grok, or handle directly                    |
+| **workflow-builder** | Design new autonomous workflows                                 |
 
 ## Workflows
 
@@ -162,15 +174,15 @@ Most AI memory is "dump everything into a vector database." OpenClaw uses delibe
 structured memory with clear tiers, managed by the gateway natively:
 
 **Tier 1 — Always loaded.** `MEMORY.md` stays in context every conversation. Curated to
-~100 lines of what matters most. Populated automatically via `openclaw memory
-promote --apply` when short-term recalls prove durable.
+~100 lines of what matters most. Populated automatically via
+`openclaw memory promote --apply` when short-term recalls prove durable.
 
 **Tier 2 — Daily context.** `memory/YYYY-MM-DD.md` files. Today and yesterday load
 automatically. Raw observations, not curated.
 
-**Tier 3 — Vector search.** Everything in `memory/` is indexed by `openclaw memory index`
-(sqlite-vec + FTS). Retrieve via `openclaw memory search "query"` — no manual entity
-pages required.
+**Tier 3 — Vector search.** Everything in `memory/` is indexed by
+`openclaw memory index` (sqlite-vec + FTS). Retrieve via
+`openclaw memory search "query"` — no manual entity pages required.
 
 REM/DREAMS consolidation (`openclaw memory rem-*`) periodically distills short-term
 recalls into long-term memory. Structured project knowledge lives in GROUNDCONTROL
@@ -262,10 +274,15 @@ or systemd units (`devops/linux/`):
 
 ### Fleet Management
 
-For multi-machine deployments, the `/fleet` command manages remote OpenClaw instances
-from a master machine. Fleet state lives in `~/openclaw-fleet/` (one markdown file per
-server). The `gateway-restart` skill ensures graceful restarts that don't interrupt
-active conversations.
+Multi-instance deployments are managed by the external **Admin-Agent** (Claude Code on
+the fleet owner's machine, loaded with a `fleet` skill). Install, update,
+migration-apply, and rollback all flow through that agent over SSH. Fleet state
+(hostnames, assistant configs, credentials) lives in `~/openclaw-fleet/` on the
+Admin-Agent's machine — never committed to this repo.
+
+See [`docs/admin-agent.md`](docs/admin-agent.md) for the command surface,
+[`docs/install.md`](docs/install.md) for the install runbook, and
+[`docs/update.md`](docs/update.md) for the update/migration flow.
 
 ## Documentation
 
@@ -285,14 +302,6 @@ If you're running multiple OpenClaw instances that need to coordinate:
 
 Both patterns are documented with working configs, troubleshooting guides, and boot
 runbooks.
-
-## Development
-
-```bash
-uv run --with pytest pytest tests/ -v
-```
-
-Integration tests auto-skip when API keys aren't set.
 
 ## Contributing
 

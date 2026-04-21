@@ -5,6 +5,42 @@ All notable changes to openclaw-config will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and
 this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.25.0] - 2026-04-20
+
+### Changed
+
+- **Base-Repo + Admin-Agent architecture.** This repo is now purely a base repository.
+  Install, update, fleet management, and gateway restart moved out of the repo into an
+  external Admin-Agent (Claude Code on the fleet owner's machine, with SSH access and a
+  separate `fleet` skill). End-user instances no longer carry admin skills.
+
+### Added
+
+- `core-migrations/` — versioned update-diffs for existing instances. Base repo is
+  always HEAD; migrations describe only the diff for older instances. Fresh installs do
+  not replay migrations.
+- `plugins/groundcontrol/install.md` — Git-based install pin for the external
+  Groundcontrol plugin repo (TypeScript plugin code stays in its own repo).
+- `cron/default-cron.md` — canonical cron manifest the Admin-Agent applies idempotently
+  to every instance.
+- `defaults/openclaw.json.template` + `defaults/README.md` — default gateway config with
+  placeholder list.
+- `docs/install.md` — Admin-Agent install runbook.
+- `docs/update.md` — Admin-Agent update runbook (migration replay).
+- `docs/admin-agent.md` — spec for the external `fleet` skill (command surface, state
+  ownership, SSH contract).
+
+### Removed
+
+- `skills/openclaw/` — installer/updater moved to `docs/install.md` and
+  `docs/update.md`, invoked by the external Admin-Agent.
+- `skills/gateway-restart/` — handled directly by the native `openclaw gateway` CLI;
+  Admin-Agent invokes it via SSH.
+- `skills/create-great-prompts/` — not needed on instances.
+- `tests/` directory and the `tests` GitHub Actions job. Skill-candidate tests had been
+  broken since the starter-set split; this repo is now a config/documentation layer with
+  no code surface to test at the repo level.
+
 ## [0.6.0] - 2026-02-02
 
 ### Added

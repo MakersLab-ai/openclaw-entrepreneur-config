@@ -1,0 +1,50 @@
+{
+  "_comment": "Default OpenClaw gateway config. Placeholders {{...}} are substituted by the Admin-Agent at install time. See defaults/README.md for placeholder list and defaults/openclaw.json.example for a rendered sample.",
+
+  "identity": {
+    "assistantName": "{{ASSISTANT_NAME}}",
+    "assistantEmail": "{{ASSISTANT_EMAIL}}",
+    "timezone": "{{TIMEZONE}}"
+  },
+
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "botToken": "{{TELEGRAM_BOT_TOKEN}}",
+      "allowlist": [
+        "{{TELEGRAM_USER_ID}}"
+      ],
+      "topics": {
+        "home": "{{TELEGRAM_TOPIC_HOME}}",
+        "automation": "{{TELEGRAM_TOPIC_AUTOMATION}}",
+        "system": "{{TELEGRAM_TOPIC_SYSTEM}}"
+      }
+    }
+  },
+
+  "memorySearch": {
+    "remote": {
+      "baseUrl": "http://127.0.0.1:1234/v1",
+      "model": "lmstudio-community/embedding-gemma-300m-qat",
+      "dimensions": 768
+    }
+  },
+
+  "plugins": {
+    "groundcontrol": {
+      "enabled": true,
+      "path": "~/.openclaw/plugins/groundcontrol"
+    }
+  },
+
+  "hooks": {
+    "internal": {
+      "entries": []
+    }
+  },
+
+  "safety": {
+    "dangerouslySkipPermissions": false,
+    "maxBudgetUsdPerSession": 10.0
+  }
+}
