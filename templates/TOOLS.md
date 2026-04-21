@@ -16,7 +16,7 @@ rules unique to your setup.
 
 **Rules:**
 
-- **To {{USER_NAME}}:** Direct send okay (no approval needed).
+- **To {{USER_NAME}} ({{USER_EMAIL}}):** Direct send okay (no approval needed).
 - **To anyone else:** Always draft first, never send without approval. Use
   `gog gmail drafts create` for external mails.
 - **No Markdown in drafts!** Gmail doesn't render Markdown. Use `--body-html` with HTML

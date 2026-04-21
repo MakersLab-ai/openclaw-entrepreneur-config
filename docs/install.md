@@ -39,17 +39,18 @@ and confirm with Christoph before overwriting.
 
 Prompt Christoph (or read from the fleet manifest in the Admin-Agent) for:
 
-| Value                | Required | Example               |
-| -------------------- | -------- | --------------------- |
-| `USER_NAME`          | yes      | `Christoph`           |
-| `USER_FULL_NAME`     | yes      | `Christoph Schleifer` |
-| `ASSISTANT_NAME`     | yes      | `Clawdia`             |
-| `ASSISTANT_EMAIL`    | yes      | `clawdia@example.com` |
-| `ASSISTANT_ROLE`     | yes      | `ops assistant`       |
-| `TIMEZONE`           | yes      | `Europe/Vienna`       |
-| `TELEGRAM_BOT_TOKEN` | yes      | (from vault)          |
-| `TELEGRAM_USER_ID`   | yes      | numeric               |
-| `TELEGRAM_TOPIC_*`   | optional | thread IDs            |
+| Value                | Required | Example                 |
+| -------------------- | -------- | ----------------------- |
+| `USER_NAME`          | yes      | `Christoph`             |
+| `USER_FULL_NAME`     | yes      | `Christoph Schleifer`   |
+| `USER_EMAIL`         | yes      | `christoph@example.com` |
+| `ASSISTANT_NAME`     | yes      | `Clawdia`               |
+| `ASSISTANT_EMAIL`    | yes      | `clawdia@example.com`   |
+| `ASSISTANT_ROLE`     | yes      | `ops assistant`         |
+| `TIMEZONE`           | yes      | `Europe/Vienna`         |
+| `TELEGRAM_BOT_TOKEN` | yes      | (from vault)            |
+| `TELEGRAM_USER_ID`   | yes      | numeric                 |
+| `TELEGRAM_TOPIC_*`   | optional | thread IDs              |
 
 ### 4. Copy + render templates
 
@@ -57,9 +58,9 @@ For each file in `templates/` (`AGENTS.md`, `SOUL.md`, `USER.md`, `HEARTBEAT.md`
 `TOOLS.md`, `IDENTITY.md`):
 
 1. Read the source file from the cloned repo on the instance.
-2. Substitute placeholders (`{{USER_NAME}}`, `{{USER_FULL_NAME}}`, `{{ASSISTANT_NAME}}`,
-   `{{TIMEZONE}}`, `{{ASSISTANT_EMAIL}}`, `{{ASSISTANT_ROLE}}`). See
-   `defaults/README.md` for the full placeholder list.
+2. Substitute placeholders (`{{USER_NAME}}`, `{{USER_FULL_NAME}}`, `{{USER_EMAIL}}`,
+   `{{ASSISTANT_NAME}}`, `{{TIMEZONE}}`, `{{ASSISTANT_EMAIL}}`, `{{ASSISTANT_ROLE}}`).
+   See `defaults/README.md` for the full placeholder list.
 3. Write to `~/openclaw/` on the instance — do NOT overwrite if the file already exists
    there.
 

@@ -49,10 +49,10 @@ the latest ID. See `core-migrations/README.md`.
 ## Template Placeholders
 
 Admin-Agent replaces these during `fleet install` (literal find-and-replace, no runtime
-engine): `{{USER_NAME}}`, `{{USER_FULL_NAME}}`, `{{ASSISTANT_NAME}}`, `{{TIMEZONE}}`
-(default `Europe/Vienna`), `{{ASSISTANT_EMAIL}}`, `{{ASSISTANT_ROLE}}`. Gateway config
-adds `{{TELEGRAM_BOT_TOKEN}}`, `{{TELEGRAM_USER_ID}}`, `{{TELEGRAM_TOPIC_*}}`. Full list
-in `defaults/README.md`.
+engine): `{{USER_NAME}}`, `{{USER_FULL_NAME}}`, `{{USER_EMAIL}}`, `{{ASSISTANT_NAME}}`,
+`{{TIMEZONE}}` (default `Europe/Vienna`), `{{ASSISTANT_EMAIL}}`, `{{ASSISTANT_ROLE}}`.
+Gateway config adds `{{TELEGRAM_BOT_TOKEN}}`, `{{TELEGRAM_USER_ID}}`,
+`{{TELEGRAM_TOPIC_*}}`. Full list in `defaults/README.md`.
 
 ## User-Owned vs Base-Repo-Owned Files
 

@@ -17,14 +17,15 @@ inserted verbatim.
 
 ### Template identity placeholders (also used in `templates/`)
 
-| Placeholder           | Source                                     | Example                |
-| --------------------- | ------------------------------------------ | ---------------------- |
-| `{{USER_NAME}}`       | Installer prompt                           | `Christoph`            |
-| `{{USER_FULL_NAME}}`  | Installer prompt                           | `Christoph Schleifer`  |
-| `{{ASSISTANT_NAME}}`  | Installer prompt                           | `Clawdia`              |
-| `{{ASSISTANT_EMAIL}}` | Installer prompt                           | `clawdia@example.com`  |
-| `{{ASSISTANT_ROLE}}`  | Installer prompt                           | `operations assistant` |
-| `{{TIMEZONE}}`        | Installer prompt (default `Europe/Vienna`) | `Europe/Vienna`        |
+| Placeholder           | Source                                     | Example                 |
+| --------------------- | ------------------------------------------ | ----------------------- |
+| `{{USER_NAME}}`       | Installer prompt                           | `Christoph`             |
+| `{{USER_FULL_NAME}}`  | Installer prompt                           | `Christoph Schleifer`   |
+| `{{USER_EMAIL}}`      | Installer prompt                           | `christoph@example.com` |
+| `{{ASSISTANT_NAME}}`  | Installer prompt                           | `Clawdia`               |
+| `{{ASSISTANT_EMAIL}}` | Installer prompt                           | `clawdia@example.com`   |
+| `{{ASSISTANT_ROLE}}`  | Installer prompt                           | `operations assistant`  |
+| `{{TIMEZONE}}`        | Installer prompt (default `Europe/Vienna`) | `Europe/Vienna`         |
 
 ### `openclaw.json.template`-specific placeholders
 
