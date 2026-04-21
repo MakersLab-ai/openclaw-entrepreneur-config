@@ -2,7 +2,7 @@
 
 ## Basic Info
 
-- **Name:** {{USER_NAME}}
+- **Name:** {{USER_FULL_NAME}}
 - **What to call them:** —
 - **Timezone:** {{TIMEZONE}}
 - **Location:** —

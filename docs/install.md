@@ -1,16 +1,16 @@
 # Install Runbook — Fresh OpenClaw Instance
 
-Runbook for the **Admin-Agent** to provision a new managed OpenClaw instance. This
-is NOT a migration replay — it copies the current repo HEAD and sets
-`current_migration` to the latest migration ID.
+Runbook for the **Admin-Agent** to provision a new managed OpenClaw instance. This is
+NOT a migration replay — it copies the current repo HEAD and sets `current_migration` to
+the latest migration ID.
 
 **Triggered by:** `fleet install <instance>` in the Admin-Skill.
 
 **Preconditions:**
 
 - SSH access to the target machine as the OpenClaw user.
-- OpenClaw gateway is already installed on the machine (this repo is a
-  configuration layer — it does NOT install the gateway itself).
+- OpenClaw gateway is already installed on the machine (this repo is a configuration
+  layer — it does NOT install the gateway itself).
 - `claude` CLI is available on the target machine (`which claude` returns a path).
 
 ---
@@ -23,8 +23,8 @@ is NOT a migration replay — it copies the current repo HEAD and sets
 ssh <instance> 'test -e ~/.openclaw/migration-state.json'
 ```
 
-If the file exists, this is an update, not an install. Stop and tell the user to
-run `fleet update <instance>` instead.
+If the file exists, this is an update, not an install. Stop and tell the user to run
+`fleet update <instance>` instead.
 
 ### 2. Clone the base repo to the instance
 
@@ -32,23 +32,24 @@ run `fleet update <instance>` instead.
 ssh <instance> 'git clone <BASE_REPO_URL> ~/.openclaw-config'
 ```
 
-If the directory already exists (e.g., leftover from a failed previous install),
-warn and confirm with Christoph before overwriting.
+If the directory already exists (e.g., leftover from a failed previous install), warn
+and confirm with Christoph before overwriting.
 
 ### 3. Collect instance-specific values
 
 Prompt Christoph (or read from the fleet manifest in the Admin-Agent) for:
 
-| Value                   | Required | Example               |
-| ----------------------- | -------- | --------------------- |
-| `USER_NAME`             | yes      | `Christoph`           |
-| `ASSISTANT_NAME`        | yes      | `Clawdia`             |
-| `ASSISTANT_EMAIL`       | yes      | `clawdia@example.com` |
-| `ASSISTANT_ROLE`        | yes      | `ops assistant`       |
-| `TIMEZONE`              | yes      | `Europe/Vienna`       |
-| `TELEGRAM_BOT_TOKEN`    | yes      | (from vault)          |
-| `TELEGRAM_USER_ID`      | yes      | numeric               |
-| `TELEGRAM_TOPIC_*`      | optional | thread IDs            |
+| Value                | Required | Example               |
+| -------------------- | -------- | --------------------- |
+| `USER_NAME`          | yes      | `Christoph`           |
+| `USER_FULL_NAME`     | yes      | `Christoph Schleifer` |
+| `ASSISTANT_NAME`     | yes      | `Clawdia`             |
+| `ASSISTANT_EMAIL`    | yes      | `clawdia@example.com` |
+| `ASSISTANT_ROLE`     | yes      | `ops assistant`       |
+| `TIMEZONE`           | yes      | `Europe/Vienna`       |
+| `TELEGRAM_BOT_TOKEN` | yes      | (from vault)          |
+| `TELEGRAM_USER_ID`   | yes      | numeric               |
+| `TELEGRAM_TOPIC_*`   | optional | thread IDs            |
 
 ### 4. Copy + render templates
 
@@ -56,23 +57,23 @@ For each file in `templates/` (`AGENTS.md`, `SOUL.md`, `USER.md`, `HEARTBEAT.md`
 `TOOLS.md`, `IDENTITY.md`):
 
 1. Read the source file from the cloned repo on the instance.
-2. Substitute placeholders (`{{USER_NAME}}`, `{{ASSISTANT_NAME}}`, `{{TIMEZONE}}`,
-   `{{ASSISTANT_EMAIL}}`, `{{ASSISTANT_ROLE}}`). See `defaults/README.md` for the
-   full placeholder list.
-3. Write to `~/openclaw/` on the instance — do NOT overwrite if the file already
-   exists there.
+2. Substitute placeholders (`{{USER_NAME}}`, `{{USER_FULL_NAME}}`, `{{ASSISTANT_NAME}}`,
+   `{{TIMEZONE}}`, `{{ASSISTANT_EMAIL}}`, `{{ASSISTANT_ROLE}}`). See
+   `defaults/README.md` for the full placeholder list.
+3. Write to `~/openclaw/` on the instance — do NOT overwrite if the file already exists
+   there.
 
 > **Memory folders:** Do NOT create `memory/people/`, `memory/projects/`,
-> `memory/topics/`, `memory/decisions/`. Those are legacy Cortex residue.
-> OpenClaw's native memory system uses `MEMORY.md` + `memory/YYYY-MM-DD.md` files,
-> indexed by `openclaw memory index` — no pre-seeded subfolders needed.
+> `memory/topics/`, `memory/decisions/`. Those are legacy Cortex residue. OpenClaw's
+> native memory system uses `MEMORY.md` + `memory/YYYY-MM-DD.md` files, indexed by
+> `openclaw memory index` — no pre-seeded subfolders needed.
 
 ### 5. Render + place `openclaw.json`
 
 1. Read `defaults/openclaw.json.template` from the cloned repo on the instance.
 2. Substitute placeholders (see `defaults/README.md`).
-3. Write to `~/.openclaw/openclaw.json` — do NOT overwrite if the file already
-   exists; warn and ask.
+3. Write to `~/.openclaw/openclaw.json` — do NOT overwrite if the file already exists;
+   warn and ask.
 
 ### 6. Install the Groundcontrol plugin
 
@@ -93,8 +94,8 @@ Follow the idempotent-apply procedure in `cron/default-cron.md`:
 
 ### 8. Write `migration-state.json`
 
-1. Find the newest migration folder in `core-migrations/` on the instance (or
-   `null` if the folder only contains `README.md`).
+1. Find the newest migration folder in `core-migrations/` on the instance (or `null` if
+   the folder only contains `README.md`).
 2. Write `~/.openclaw/migration-state.json`:
 
    ```json
@@ -154,8 +155,8 @@ Summary message:
 If any step fails:
 
 1. Leave the instance in its current partial state (do NOT auto-rollback).
-2. Escalate to Christoph with: which step failed, the error output, and the state
-   of `migration-state.json` (if it was already written).
+2. Escalate to Christoph with: which step failed, the error output, and the state of
+   `migration-state.json` (if it was already written).
 3. A failed install can be resumed manually by re-running the failed step once the
    underlying issue is fixed.
 
